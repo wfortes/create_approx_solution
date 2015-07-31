@@ -1,5 +1,8 @@
 function reconstruction = round2d_set(reconstruction, given_sol, d_set, Ix_c)
 % round to available grey values
+%
+% Wagner Fortes 2014/2015 wfortes@gmail.com
+
 d_set = sort(d_set);
 for i = Ix_c
     if given_sol(i) >= d_set(end)

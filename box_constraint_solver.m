@@ -1,4 +1,8 @@
-function x = box_constraint_solver(A,b,maxit,tol,method)
+function x = box_constraint_solver(A, b, maxit, tol, method, d_set)
+%BOX_CONSTRAINT_SOLVER finds an approximate solution of a given linear
+%system of equations inside given a range given in D_SET
+%
+% Wagner Fortes 2014/2015 wfortes@gmail.com
 
 x = zeros(size(A,2),1);
 x_aux = x;
@@ -15,7 +19,7 @@ if strcmp(method,'ART')
                 if mod(iter,100)==0
                     fprintf('%d\t%g\n',iter,norm(b-A*x,inf))
                 end
-                x = Pontod_set(x_aux,[0;1]);
+                x = Pontod_set(x_aux,d_set);
                 iter = iter+1;
             end
         end
@@ -29,7 +33,7 @@ elseif strcmp(method,'ART-tol')
                 if mod(iter,100)==0
                     fprintf('%d\t%g\n',iter,norm(b-A*x,inf))
                 end
-                x = Pontod_set(x_aux,[0;1]);
+                x = Pontod_set(x_aux,d_set);
                 iter = iter+1;
             end
         end
@@ -41,13 +45,13 @@ elseif strcmp(method,'SIRT')
     while norm(b-A*x,inf) > tol && iter < maxit
         r = b - A*x;
         x_aux = x_aux+M*r;
-        x = Pontod_set(x_aux,[0;1]);
+        x = Pontod_set(x_aux,d_set);
         iter = iter+1;
     end
 end
 
 function x = Pontod_set(x,d_set)
-
+% Constrain x values to set extremes
 for i = 1:length(x)
     if x(i) > d_set(end)
         x(i) = d_set(end);
